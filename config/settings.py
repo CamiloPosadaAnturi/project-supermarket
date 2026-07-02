@@ -30,19 +30,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = [
-    "project-supermarket-production.up.railway.app",
-    "mana-dagua.up.railway.app",
-    "localhost",
-    "127.0.0.1",
-]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://mana-dagua.up.railway.app",
-    "https://project-supermarket-production.up.railway.app",
-]
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "https://mana-dagua.up.railway.app,https://project-supermarket-production.up.railway.app",
+).split(",")
 
 # Application definition
 
@@ -102,16 +96,13 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-import dj_database_url
 
 # Database
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
     # Producción (Railway inyecta DATABASE_URL automáticamente)
-    DATABASES = {
-        "default": dj_database_url.config(conn_max_age=600)
-    }
+    DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
 else:
     # Local (usa las variables individuales del .env)
     DATABASES = {
